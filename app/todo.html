@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/all.min.css">
+</head>
+<body>
+    <nav class="navbar bg-dark navbar-dark">
+        <div class="container" style="max-width: 600px">
+            <a href="#" class="navbar-brand">Todo</a>
+        </div>
+    </nav>
+
+    <div class="container" style="max-width: 600px">
+        <form class="input-group my-4">
+            <input type="text" class="form-control">
+            <button class="btn btn-dark">Add</button>
+        </form>
+        
+        <ul id="todo" class="list-group"></ul>
+    </div>
+
+    <script>
+        document.querySelector("form").onsubmit = e => {
+            e.preventDefault();
+
+            let text = document.querySelector("input").value;
+            if(!text) return false;
+
+            createItem(text);
+
+            e.currentTarget.reset();
+        }
+
+        function createItem(text) {
+            let li = document.createElement("li");
+            li.classList.add("list-group-item");
+            li.textContent = text;
+
+            let del = document.createElement("a");
+            del.setAttribute("href", "#");
+            del.classList.add("fa-solid", "fa-trash", "text-danger", "float-end");
+            del.onclick = () => {
+                li.remove();
+            }
+            li.appendChild(del);
+
+            document.querySelector("#todo").appendChild(li);
+        }
+    </script>
+</body>
+</html>
