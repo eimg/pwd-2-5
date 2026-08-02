@@ -3,6 +3,7 @@ import App from "./App";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
+import AppRouter from "./AppRouter";
 
 const AppContext = createContext();
 
@@ -19,7 +20,7 @@ export default function AppProvider() {
 	return (
 		<AppContext.Provider value={{ mode, setMode, openDrawer, setOpenDrawer }}>
 			<ThemeProvider theme={theme}>
-				<App />
+				<AppRouter />
 				<CssBaseline />
 			</ThemeProvider>
 		</AppContext.Provider>
