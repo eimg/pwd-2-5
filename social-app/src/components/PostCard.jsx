@@ -9,7 +9,7 @@ import {
 
 import { useNavigate } from "react-router";
 
-export default function PostCard() {
+export default function PostCard({ post }) {
     const navigate = useNavigate();
 
     return (
@@ -21,17 +21,13 @@ export default function PostCard() {
 					/>
 					<Box>
 						<Typography sx={{ fontWeight: "bold" }}>
-							Alice
+							{post.user.name}
 						</Typography>
 						<Typography sx={{ color: green[500] }}>
-							a few seconds ago
+							{post.created}
 						</Typography>
-						<Typography sx={{ mt: 1 }} onClick={() => navigate("/view/1")}>
-							Lorem ipsum dolor sit amet consectetur adipisicing
-							elit. Quae modi repellendus eius eum voluptatum
-							maxime tenetur odit eligendi sunt! Ipsum veniam
-							ipsam beatae, animi odit odio nisi ipsa expedita
-							porro!
+						<Typography sx={{ mt: 1 }} onClick={() => navigate(`/view/${post.id}`)}>
+							{post.content}
 						</Typography>
 					</Box>
 				</Box>
@@ -43,7 +39,7 @@ export default function PostCard() {
 						<Button
 							size="sm"
 							variant="text">
-							10
+							{post.likes ? post.likes.length : 0}
 						</Button>
 					</ButtonGroup>
 					<ButtonGroup>
@@ -53,7 +49,7 @@ export default function PostCard() {
 						<Button
 							size="sm"
 							variant="text">
-							5
+							{post.comments ? post.comments.length : 0}
 						</Button>
 					</ButtonGroup>
 				</Box>

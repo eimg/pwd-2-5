@@ -5,6 +5,10 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import AppRouter from "./AppRouter";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
 const AppContext = createContext();
 
 export default function AppProvider() {
@@ -18,11 +22,14 @@ export default function AppProvider() {
 	}, [mode]);
 
 	return (
-		<AppContext.Provider value={{ mode, setMode, openDrawer, setOpenDrawer }}>
-			<ThemeProvider theme={theme}>
-				<AppRouter />
-				<CssBaseline />
-			</ThemeProvider>
+		<AppContext.Provider
+			value={{ mode, setMode, openDrawer, setOpenDrawer }}>
+			<QueryClientProvider client={queryClient}>
+				<ThemeProvider theme={theme}>
+					<AppRouter />
+					<CssBaseline />
+				</ThemeProvider>
+			</QueryClientProvider>
 		</AppContext.Provider>
 	);
 }
