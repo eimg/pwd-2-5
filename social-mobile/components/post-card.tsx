@@ -42,7 +42,7 @@ export default function PostCard() {
 			</View>
 			<View
 				style={{
-					marginTop: 24,
+					marginTop: 20,
 					flexDirection: "row",
 					justifyContent: "space-around",
 				}}>
