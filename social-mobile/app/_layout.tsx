@@ -11,7 +11,7 @@ export default function RootLayout() {
 				/>
 				<Stack.Screen
 					name="add-post"
-					options={{ title: "Add Post" }}
+					options={{ title: "Add Post", presentation: "modal" }}
 				/>
 				<Stack.Screen
 					name="view-post/[id]"

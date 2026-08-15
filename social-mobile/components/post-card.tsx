@@ -1,7 +1,10 @@
 import { Text, View, ScrollView, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { PostType } from "@/types/global";
 
-export default function PostCard() {
+import { router } from "expo-router";
+
+export default function PostCard({ post }: { post: PostType }) {
 	return (
 		<View
 			style={{
@@ -26,18 +29,18 @@ export default function PostCard() {
 							fontWeight: "bold",
 							color: "white",
 						}}>
-						A
+						{post.user.name[0].toUpperCase()}
 					</Text>
 				</View>
 				<View style={{ flexShrink: 1 }}>
-					<Text style={{ fontSize: 18 }}>Alice</Text>
-					<Text style={{ color: "teal" }}>a few seonds ago</Text>
-					<Text style={{ marginTop: 8, fontSize: 16 }}>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit.
-						Voluptate modi voluptates ratione iste molestiae
-						voluptas quia ipsa? Corrupti numquam sint unde beatae
-						velit esse consequuntur id nam, labore aut perspiciatis?
-					</Text>
+					<Text style={{ fontSize: 18 }}>{post.user.name}</Text>
+					<Text style={{ color: "teal" }}>{post.created}</Text>
+					<TouchableOpacity
+						onPress={() => router.push(`/view-post/${post.id}`)}>
+						<Text style={{ marginTop: 8, fontSize: 16 }}>
+							{post.content}
+						</Text>
+					</TouchableOpacity>
 				</View>
 			</View>
 			<View
@@ -74,7 +77,7 @@ export default function PostCard() {
 							color="#666666"
 						/>
 					</TouchableOpacity>
-					<Text style={{ fontSize: 16 }}>3</Text>
+					<Text style={{ fontSize: 16 }}>{post.comments.length}</Text>
 				</View>
 			</View>
 		</View>

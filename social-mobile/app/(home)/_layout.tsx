@@ -1,7 +1,11 @@
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { TouchableOpacity } from "react-native";
+import { useApp } from "@/components/app-provider";
 
 export default function HomeLayout() {
+	const { auth } = useApp();
+
 	return (
 		<Tabs>
 			<Tabs.Screen
@@ -10,8 +14,26 @@ export default function HomeLayout() {
 					title: "Home",
 					tabBarIcon: ({ color }) => {
 						return (
-							<Ionicons size={24} name="home" color={color} />
+							<Ionicons
+								size={24}
+								name="home"
+								color={color}
+							/>
 						);
+					},
+					headerRight: () => {
+						if (auth) {
+							<TouchableOpacity
+								style={{ marginRight: 20 }}
+								onPress={() => router.push("/add-post")}>
+								<Ionicons
+									size={24}
+									name="add"
+								/>
+							</TouchableOpacity>;
+						} else {
+							return <></>;
+						}
 					},
 				}}
 			/>
@@ -21,7 +43,11 @@ export default function HomeLayout() {
 					title: "Profile",
 					tabBarIcon: ({ color }) => {
 						return (
-							<Ionicons size={24} name="person" color={color} />
+							<Ionicons
+								size={24}
+								name="person"
+								color={color}
+							/>
 						);
 					},
 				}}
@@ -32,7 +58,11 @@ export default function HomeLayout() {
 					title: "Settings",
 					tabBarIcon: ({ color }) => {
 						return (
-							<Ionicons size={24} name="settings" color={color} />
+							<Ionicons
+								size={24}
+								name="settings"
+								color={color}
+							/>
 						);
 					},
 				}}

@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import { UserType } from "@/types/global";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-type AuthContextType = {
+export const queryClient = new QueryClient();
+
+type AppContextType = {
 	auth: UserType | null;
 	setAuth: React.Dispatch<React.SetStateAction<UserType | null>>;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export default function AppProvider({ children }: { children: ReactNode }) {
 	const [auth, setAuth] = useState<UserType | null>(null);
@@ -36,17 +38,19 @@ export default function AppProvider({ children }: { children: ReactNode }) {
     }, []);
 
 	return (
-		<AuthContext.Provider value={{ auth, setAuth }}>
-			{children}
-		</AuthContext.Provider>
+		<QueryClientProvider client={queryClient}>
+			<AppContext.Provider value={{ auth, setAuth }}>
+				{children}
+			</AppContext.Provider>
+		</QueryClientProvider>
 	);
 }
 
 export function useApp() {
-	const context = useContext(AuthContext);
+	const context = useContext(AppContext);
 
 	if (context === undefined) {
-		throw new Error("useAuth must be used within an AuthProvider");
+		throw new Error("useApp must be used within an AppProvider");
 	}
 
 	return context;

@@ -35,6 +35,30 @@ export default function Profile() {
 					<Text style={{ fontWeight: "bold", fontSize: 21 }}>
 						Profile
 					</Text>
+
+					<TouchableOpacity
+						onPress={async () => {
+                            setAuth(null);
+                            await AsyncStorage.removeItem("token");
+                        }}
+						style={{
+							paddingVertical: 15,
+                            paddingHorizontal: 40,
+							backgroundColor: "red",
+							borderRadius: 20,
+							marginTop: 10,
+							alignItems: "center",
+							justifyContent: "center",
+						}}>
+						<Text
+							style={{
+								color: "white",
+								fontWeight: "bold",
+								fontSize: 16,
+							}}>
+							Logout
+						</Text>
+					</TouchableOpacity>
 				</>
 			)}
 
