@@ -1,6 +1,10 @@
 import AppProvider from "@/components/app-provider";
 import { Stack } from "expo-router";
 
+export const unstable_settings = {
+	initialRouteName: "(home)",
+};
+
 export default function RootLayout() {
 	return (
 		<AppProvider>
@@ -15,7 +19,7 @@ export default function RootLayout() {
 				/>
 				<Stack.Screen
 					name="view-post/[id]"
-					options={{ title: "View Post" }}
+					options={{ title: "View Post", headerBackTitle: "Back" }}
 				/>
 			</Stack>
 		</AppProvider>

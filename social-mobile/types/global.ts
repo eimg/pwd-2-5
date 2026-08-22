@@ -16,6 +16,13 @@ export type CommentType = {
     post: PostType;
 }
 
+export type LikeType = {
+    id: number;
+    userId: number;
+    postId: number;
+    created: string;
+}
+
 export type PostType = {
     id: number;
     content: string;
@@ -23,5 +30,5 @@ export type PostType = {
     userId: number;
     user: UserType;
     comments: CommentType[];
-    likes: [];
+    likes: LikeType[];
 }

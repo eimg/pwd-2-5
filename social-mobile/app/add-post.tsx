@@ -1,70 +1,57 @@
 import { queryClient } from "@/components/app-provider";
+import { Field, PrimaryButton } from "@/components/form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Text, View, TouchableOpacity, TextInput } from "react-native";
+import {
+	Keyboard,
+	KeyboardAvoidingView,
+	Platform,
+	Pressable,
+	View,
+} from "react-native";
 
 export default function AddPost() {
-    const [content, setContent] = useState("");
+	const [content, setContent] = useState("");
 
-    const postPost = async () => {
-        const token = await AsyncStorage.getItem("token");
+	const postPost = async () => {
+		const token = await AsyncStorage.getItem("token");
 
-        const res = await fetch("http://localhost:8800/posts", {
-            method: "POST",
-            body: JSON.stringify({ content }),
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            }
-        });
+		const res = await fetch("http://localhost:8800/posts", {
+			method: "POST",
+			body: JSON.stringify({ content }),
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		});
 
-        if(res.ok) {
-            await queryClient.invalidateQueries({ queryKey: ["posts"] });
-            router.dismiss();
-        } else {
-            alert("Unable to add post");
-            router.dismiss();
-        }
-    }
+		if (res.ok) {
+			await queryClient.invalidateQueries({ queryKey: ["posts"] });
+			router.dismiss();
+		} else {
+			alert("Unable to add post");
+			router.dismiss();
+		}
+	};
 
 	return (
-		<View>
-			<View style={{ paddingBottom: 12, paddingHorizontal: 20 }}>
-				<TextInput
-                    value={content}
-                    onChangeText={setContent}
-					style={{
-						width: "100%",
-						paddingVertical: 15,
-						paddingHorizontal: 18,
-						borderWidth: 1,
-						borderColor: "#666666",
-						borderRadius: 20,
-						marginTop: 20,
-						fontSize: 16,
-					}}
-				/>
-				<TouchableOpacity
-                    onPress={postPost}
-					style={{
-						paddingVertical: 15,
-						backgroundColor: "teal",
-						borderRadius: 20,
-						marginTop: 10,
-						alignItems: "center",
-						justifyContent: "center",
-					}}>
-					<Text
-						style={{
-							color: "white",
-							fontWeight: "bold",
-							fontSize: 16,
-						}}>
-						Add Post
-					</Text>
-				</TouchableOpacity>
-			</View>
-		</View>
+		<KeyboardAvoidingView
+			style={{ flex: 1 }}
+			behavior={Platform.OS === "ios" ? "padding" : undefined}>
+			<Pressable onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+				<View style={{ padding: 20, gap: 14 }}>
+					<Field
+						label="What's on your mind?"
+						value={content}
+						onChangeText={setContent}
+						placeholder="Write a post..."
+						multiline
+						style={{ minHeight: 120, textAlignVertical: "top" }}
+					/>
+					<PrimaryButton title="Add Post" onPress={postPost} />
+				</View>
+			</Pressable>
+		</KeyboardAvoidingView>
 	);
 }

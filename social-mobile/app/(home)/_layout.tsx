@@ -21,8 +21,8 @@ export default function HomeLayout() {
 							/>
 						);
 					},
-					headerRight: () => {
-						if (auth) {
+					headerRight: () =>
+						auth ? (
 							<TouchableOpacity
 								style={{ marginRight: 20 }}
 								onPress={() => router.push("/add-post")}>
@@ -30,11 +30,8 @@ export default function HomeLayout() {
 									size={24}
 									name="add"
 								/>
-							</TouchableOpacity>;
-						} else {
-							return <></>;
-						}
-					},
+							</TouchableOpacity>
+						) : null,
 				}}
 			/>
 			<Tabs.Screen

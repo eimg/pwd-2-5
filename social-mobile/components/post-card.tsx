@@ -1,10 +1,61 @@
-import { Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { PostType } from "@/types/global";
+import { queryClient, useApp } from "@/components/app-provider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 
 export default function PostCard({ post }: { post: PostType }) {
+	const { auth } = useApp();
+	const pathname = usePathname();
+
+	const liked = Boolean(auth && post.likes?.some(like => like.userId === auth.id));
+
+	const toggleLike = async () => {
+		if (!auth) {
+			return;
+		}
+
+		const token = await AsyncStorage.getItem("token");
+		const res = await fetch(`http://localhost:8800/posts/${post.id}/like`, {
+			method: liked ? "DELETE" : "POST",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (res.ok) {
+			await queryClient.invalidateQueries({ queryKey: ["posts"] });
+		} else {
+			alert(liked ? "Unable to unlike" : "Unable to like");
+		}
+	};
+
+	const deletePost = async () => {
+		const token = await AsyncStorage.getItem("token");
+
+		const res = await fetch(`http://localhost:8800/posts/${post.id}`, {
+			method: "DELETE",
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+
+		if (res.ok) {
+			await queryClient.invalidateQueries({ queryKey: ["posts"] });
+			if (pathname.includes("view-post")) {
+				if (router.canGoBack()) {
+					router.back();
+				} else {
+					router.replace("/");
+				}
+			}
+		} else {
+			alert("Unable to delete post");
+		}
+	};
+
 	return (
 		<View
 			style={{
@@ -32,11 +83,34 @@ export default function PostCard({ post }: { post: PostType }) {
 						{post.user.name[0].toUpperCase()}
 					</Text>
 				</View>
-				<View style={{ flexShrink: 1 }}>
-					<Text style={{ fontSize: 18 }}>{post.user.name}</Text>
-					<Text style={{ color: "teal" }}>{post.created}</Text>
+				<View style={{ flexShrink: 1, flex: 1 }}>
+					<View
+						style={{
+							flexDirection: "row",
+							justifyContent: "space-between",
+							alignItems: "flex-start",
+						}}>
+						<View style={{ flexShrink: 1 }}>
+							<Text style={{ fontSize: 18 }}>{post.user.name}</Text>
+							<Text style={{ color: "teal" }}>{post.created}</Text>
+						</View>
+						{auth && auth.id === post.userId && (
+							<TouchableOpacity onPress={deletePost}>
+								<Ionicons
+									size={22}
+									name="trash-outline"
+									color="#666666"
+								/>
+							</TouchableOpacity>
+						)}
+					</View>
 					<TouchableOpacity
-						onPress={() => router.push(`/view-post/${post.id}`)}>
+						onPress={() => {
+							if (pathname === `/view-post/${post.id}`) {
+								return;
+							}
+							router.push(`/view-post/${post.id}`);
+						}}>
 						<Text style={{ marginTop: 8, fontSize: 16 }}>
 							{post.content}
 						</Text>
@@ -55,14 +129,16 @@ export default function PostCard({ post }: { post: PostType }) {
 						flexDirection: "row",
 						alignItems: "center",
 					}}>
-					<TouchableOpacity>
+					<TouchableOpacity onPress={toggleLike}>
 						<Ionicons
 							size={28}
-							name="heart-outline"
+							name={liked ? "heart" : "heart-outline"}
 							color="red"
 						/>
 					</TouchableOpacity>
-					<Text style={{ fontSize: 16 }}>5</Text>
+					<Text style={{ fontSize: 16 }}>
+						{post.likes ? post.likes.length : 0}
+					</Text>
 				</View>
 				<View
 					style={{

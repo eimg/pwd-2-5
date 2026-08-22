@@ -46,6 +46,26 @@ router.get("/users", auth, async (req, res) => {
 	res.json(users);
 });
 
+router.get("/users/:id/posts", async (req, res) => {
+	const userId = Number(req.params.id);
+	if (!userId) {
+		return res.status(400).json({ msg: "invalid user id" });
+	}
+
+	const posts = await prisma.post.findMany({
+		where: { userId },
+		take: 20,
+		orderBy: { id: "desc" },
+		include: {
+			user: true,
+			comments: true,
+			likes: true,
+		},
+	});
+
+	res.json(posts);
+});
+
 // curl -X POST localhost:8800/users -d "name=Eve&username=eve&password=password"
 router.post("/users", async (req, res) => {
 	const name = req.body?.name;
